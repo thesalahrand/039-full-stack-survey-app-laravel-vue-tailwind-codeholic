@@ -1,9 +1,9 @@
-<script setup></script>
+<script setup>
+import PageComponent from '../components/PageComponent.vue'
+</script>
 
 <template>
-  <div>
-    <h4 class="text-2xl font-bold dark:text-white mb-6">Surveys</h4>
-  </div>
+  <page-component title="Surveys"> h </page-component>
 </template>
 
 <style scoped></style>
