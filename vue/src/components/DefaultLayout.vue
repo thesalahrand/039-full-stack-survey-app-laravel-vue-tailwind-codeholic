@@ -28,7 +28,11 @@ const userStore = useUserStore()
             data-dropdown-placement="bottom"
           >
             <span class="sr-only">Open user menu</span>
-            <img class="w-8 h-8 rounded-full" :src="userStore.user.image" alt="user photo" />
+            <img
+              class="w-8 h-8 rounded-full"
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1Fs8Arl_LnQwQ8ppF4IpZJ88JMXu4SHf7iFLcKQtUqg&s"
+              alt="user photo"
+            />
           </button>
           <!-- Dropdown menu -->
           <div
@@ -37,17 +41,17 @@ const userStore = useUserStore()
           >
             <div class="px-4 py-3">
               <span class="block text-sm text-gray-900 dark:text-white">{{
-                userStore.user.name
+                userStore.authUser.name
               }}</span>
               <span class="block text-sm text-gray-500 truncate dark:text-gray-400">{{
-                userStore.user.email
+                userStore.authUser.email
               }}</span>
             </div>
             <ul class="py-2" aria-labelledby="user-menu-button">
               <li>
                 <a
                   href="#"
-                  @click.prevent="userStore.signOut()"
+                  @click.prevent="userStore.logout()"
                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                   >Sign out</a
                 >
