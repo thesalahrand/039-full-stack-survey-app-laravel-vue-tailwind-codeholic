@@ -43,8 +43,10 @@ class AuthController extends Controller
 
     if (!auth()->attempt($validated, $remember)) {
       return response([
-        'error' => 'Invalid email or password'
-      ]);
+        'errors' => [
+          'generic' => ['Invalid email or password']
+        ]
+      ], 422);
     }
 
     $user = auth()->user();
