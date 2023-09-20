@@ -29,4 +29,29 @@ class AuthController extends Controller
       'user' => $user
     ]);
   }
+
+  public function login(Request $request): Response
+  {
+    $validated = $request->validate([
+      'email' => 'required|email|string|exists:users,email',
+      'password' => 'required',
+      'remember' => 'boolean'
+    ]);
+
+    $remember = $validated['remember'] ?? false;
+    unset($validated['remember']);
+
+    if (!auth()->attempt($validated, $remember)) {
+      return response([
+        'error' => 'Invalid email or password'
+      ]);
+    }
+
+    $user = auth()->user();
+    $user['token'] = $user->createToken('main')->plainTextToken;
+
+    return response([
+      'user' => $user
+    ]);
+  }
 }
