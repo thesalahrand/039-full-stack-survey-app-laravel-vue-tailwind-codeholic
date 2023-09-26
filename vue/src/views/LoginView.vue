@@ -1,6 +1,9 @@
 <script setup>
-import { reactive } from 'vue'
+import { ref, reactive } from 'vue'
 import { useUserStore } from '../stores/user'
+import router from '../router'
+import InputError from '../components/reusable/InputError.vue'
+import IconX from '../components/icons/IconX.vue'
 
 const userStore = useUserStore()
 
@@ -9,11 +12,43 @@ const user = reactive({
   password: '',
   remember: false
 })
+const errors = ref({})
+
+const login = async () => {
+  try {
+    const data = await userStore.login(user)
+    sessionStorage.setItem('user', JSON.stringify(data.user))
+    userStore.user = data.user
+    errors.value = {}
+    router.push({ name: 'dashboard' })
+  } catch (error) {
+    errors.value = error
+  }
+}
 </script>
 
 <template>
-  <form class="space-y-6" @submit.prevent="userStore.login(user)">
+  <form class="space-y-6" @submit.prevent="login()">
     <h5 class="text-xl font-medium text-gray-900 dark:text-white">Sign in to our platform</h5>
+    <div
+      class="flex items-center p-4 mb-4 text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+      role="alert"
+      v-if="errors.generic"
+    >
+      <span class="sr-only">Info</span>
+      <div class="text-sm font-medium">
+        {{ errors.generic[0] }}
+      </div>
+      <button
+        type="button"
+        class="ml-auto -mx-1.5 -my-1.5 bg-red-50 text-red-500 rounded-lg focus:ring-2 focus:ring-red-400 p-1.5 hover:bg-red-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-red-400 dark:hover:bg-gray-700"
+        aria-label="Close"
+        @click="errors = {}"
+      >
+        <span class="sr-only">Close</span>
+        <icon-x />
+      </button>
+    </div>
     <div>
       <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
         >Your email</label
@@ -27,6 +62,7 @@ const user = reactive({
         required
         v-model="user.email"
       />
+      <input-error :errors="errors.email" />
     </div>
     <div>
       <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -41,6 +77,7 @@ const user = reactive({
         required
         v-model="user.password"
       />
+      <input-error :errors="errors.password" />
     </div>
     <div class="flex items-start">
       <div class="flex items-start">

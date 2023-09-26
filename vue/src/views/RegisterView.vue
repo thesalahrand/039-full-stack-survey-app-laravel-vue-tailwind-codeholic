@@ -1,6 +1,8 @@
 <script setup>
-import { reactive } from 'vue'
+import { ref, reactive } from 'vue'
 import { useUserStore } from '../stores/user'
+import router from '../router'
+import InputError from '../components/reusable/InputError.vue'
 
 const userStore = useUserStore()
 
@@ -10,10 +12,23 @@ const user = reactive({
   password: '',
   password_confirmation: ''
 })
+const errors = ref({})
+
+const register = async () => {
+  try {
+    const data = await userStore.register(user)
+    sessionStorage.setItem('user', JSON.stringify(data.user))
+    userStore.user = data.user
+    errors.value = {}
+    router.push({ name: 'dashboard' })
+  } catch (error) {
+    errors.value = error
+  }
+}
 </script>
 
 <template>
-  <form class="space-y-6" @submit.prevent="userStore.register(user)">
+  <form class="space-y-6" @submit.prevent="register(user)">
     <h5 class="text-xl font-medium text-gray-900 dark:text-white">Sign up to our platform</h5>
     <div>
       <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -25,9 +40,10 @@ const user = reactive({
         id="name"
         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
         placeholder="ex. Sourav Malo"
-        required
         v-model="user.name"
+        required
       />
+      <input-error :errors="errors.name" />
     </div>
     <div>
       <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -39,9 +55,9 @@ const user = reactive({
         id="email"
         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
         placeholder="ex. sourav.cse5.bu@gmail.com"
-        required
         v-model="user.email"
       />
+      <input-error :errors="errors.email" />
     </div>
     <div>
       <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -53,9 +69,10 @@ const user = reactive({
         id="password"
         placeholder="••••••••"
         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-        required
         v-model="user.password"
+        required
       />
+      <input-error :errors="errors.password" />
     </div>
     <div>
       <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -67,8 +84,8 @@ const user = reactive({
         id="password_confirmation"
         placeholder="••••••••"
         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-        required
         v-model="user.password_confirmation"
+        required
       />
     </div>
     <!-- <div class="flex items-start">

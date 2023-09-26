@@ -1,49 +1,27 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import router from '../router'
+import axiosClient from '../axios'
 
 export const useUserStore = defineStore('user', () => {
   const user = ref(JSON.parse(sessionStorage.getItem('user')) || {})
 
   const register = (_user) => {
-    fetch('http://127.0.0.1:8000/api/register', {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/json',
-        Accept: 'application/json'
-      },
-      body: JSON.stringify(_user)
+    return new Promise((resolve, reject) => {
+      axiosClient
+        .post('/register', _user)
+        .then(({ data }) => resolve(data))
+        .catch((error) => reject(error.response.data.errors))
     })
-      .then((res) => res.json())
-      .then((data) => {
-        if (!data.errors) {
-          sessionStorage.setItem('user', JSON.stringify(data.user))
-          user.value = data.user
-          router.push({ name: 'dashboard' })
-        }
-      })
-      .catch((err) => console.log(err))
   }
 
   const login = (_user) => {
-    fetch('http://127.0.0.1:8000/api/login', {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/json',
-        Accept: 'application/json'
-      },
-      body: JSON.stringify(_user)
+    return new Promise((resolve, reject) => {
+      axiosClient
+        .post('/login', _user)
+        .then(({ data }) => resolve(data))
+        .catch((error) => reject(error.response.data.errors))
     })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data)
-        if (!data.errors) {
-          sessionStorage.setItem('user', JSON.stringify(data.user))
-          user.value = data.user
-          router.push({ name: 'dashboard' })
-        }
-      })
-      .catch((err) => console.log(err))
   }
 
   const logout = () => {
