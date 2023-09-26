@@ -17,8 +17,7 @@ const errors = ref({})
 const login = async () => {
   try {
     const data = await userStore.login(user)
-    sessionStorage.setItem('user', JSON.stringify(data.user))
-    userStore.user = data.user
+    userStore.storeUser(data.user)
     errors.value = {}
     router.push({ name: 'dashboard' })
   } catch (error) {

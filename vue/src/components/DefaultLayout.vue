@@ -2,6 +2,7 @@
 import { onMounted } from 'vue'
 import { initCollapses, initDropdowns } from 'flowbite'
 import { useUserStore } from '../stores/user.js'
+import router from '../router'
 
 onMounted(() => {
   initCollapses()
@@ -9,6 +10,16 @@ onMounted(() => {
 })
 
 const userStore = useUserStore()
+
+const logout = async () => {
+  try {
+    await userStore.logout()
+    userStore.removeUser()
+    router.push({ name: 'login' })
+  } catch (error) {
+    console.log(error)
+  }
+}
 </script>
 
 <template>
@@ -51,7 +62,7 @@ const userStore = useUserStore()
               <li>
                 <a
                   href="#"
-                  @click.prevent="userStore.logout()"
+                  @click.prevent="logout()"
                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                   >Sign out</a
                 >

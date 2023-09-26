@@ -1,6 +1,5 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import router from '../router'
 import axiosClient from '../axios'
 
 export const useUserStore = defineStore('user', () => {
@@ -25,10 +24,23 @@ export const useUserStore = defineStore('user', () => {
   }
 
   const logout = () => {
-    user.value = {}
-    sessionStorage.removeItem('user')
-    router.push({ name: 'login' })
+    return new Promise((resolve, reject) => {
+      axiosClient
+        .post('/logout')
+        .then(({ data }) => resolve(data))
+        .catch((error) => reject(error.response.data.errors))
+    })
   }
 
-  return { user, register, login, logout }
+  const storeUser = (_user) => {
+    user.value = _user
+    sessionStorage.setItem('user', JSON.stringify(_user))
+  }
+
+  const removeUser = () => {
+    user.value = {}
+    sessionStorage.removeItem('user')
+  }
+
+  return { user, register, login, logout, storeUser, removeUser }
 })
