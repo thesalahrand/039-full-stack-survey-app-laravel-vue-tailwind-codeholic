@@ -3,6 +3,7 @@ import LoginView from '../views/LoginView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import DashboardView from '../views/DashboardView.vue'
 import SurveysView from '../views/SurveysView.vue'
+import SurveyView from '../views/SurveyView.vue'
 import DefaultLayout from '../components/DefaultLayout.vue'
 import AuthLayout from '../components/AuthLayout.vue'
 import { useUserStore } from '../stores/user.js'
@@ -17,14 +18,24 @@ const router = createRouter({
       meta: { requiresAuth: true },
       children: [
         {
-          path: 'dashboard',
+          path: '/dashboard',
           component: DashboardView,
           name: 'dashboard'
         },
         {
-          path: 'surveys',
+          path: '/surveys',
           component: SurveysView,
           name: 'surveys'
+        },
+        {
+          path: '/surveys/create',
+          component: SurveyView,
+          name: 'survey-create'
+        },
+        {
+          path: '/surveys/:id',
+          component: SurveyView,
+          name: 'survey-view'
         }
       ]
     },

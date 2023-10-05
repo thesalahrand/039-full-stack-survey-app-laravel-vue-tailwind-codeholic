@@ -129,7 +129,7 @@ const logout = async () => {
         </div>
       </div>
     </nav>
-    <div class="max-w-screen-xl mx-auto p-4 mt-6">
+    <div class="max-w-screen-xl mx-auto px-4 mt-6">
       <router-view></router-view>
     </div>
   </div>
